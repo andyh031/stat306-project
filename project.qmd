@@ -186,7 +186,7 @@ to a higher selling price. We see that there is very little data for
 data$core <- fct_recode(data$core, "8" = "6")
 ```
 
-### 2.2 Methodology and Assumptions
+### 2.3 Methodology and Assumptions
 
 The objective is to regress on price, given a collection of different
 covariates describing a phone's characteristics. Since we are modelling
@@ -213,7 +213,7 @@ model diagnostics and suitability of a linear model. Some ways we can do
 this is to test homoscedasticity through a residual vs. fitted value
 plot, and we can also test normality through a QQ plot.
 
-### 2.3 Model Selection
+### 2.4 Model Selection
 
 As a result of our EDA and wariness of multicollinearity, we begin by
 checking the VIF scores for a full model including all covariates
@@ -274,7 +274,7 @@ below:
 |----------------|------------------|----------|
 | Mallow's $C_p$ | 10.1530368897259 | 11       |
 
-### 2.4 Model Diagnostics
+### 2.5 Model Diagnostics
 
 ```{r}
 vif(reduced_model)
