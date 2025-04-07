@@ -27,7 +27,7 @@ observational study by recording existing phone specifications and
 market prices, rather than through a controlled experiment.
 
 | Variable Name | Description | Type |
-|----|----|----|
+|------------------------|------------------------|------------------------|
 | Price | Price of a phone (dollars) | Continuous |
 | Weight | Weight of a phone (grams) | Continuous |
 | PPI | Phone Pixel Density (pixels per inch) | Continuous |
@@ -394,3 +394,5 @@ https://www.statista.com/statistics/263437/global-smartphone-sales-to-end-users-
 Sidoti, O., Dawson, W., Gelles-Watnick, R., Faverio, M., Atske, S.,
 Radde, K., & Park, E. (2024, November 13). *Mobile Fact Sheet*. Pew
 Research Center. https://www.pewresearch.org/internet/fact-sheet/mobile/
+
+Younesi, F. (2022, August 21). *Mobile Price Prediction*. Kaggle. https://www.kaggle.com/datasets/mohannapd/mobile-price-prediction/data
