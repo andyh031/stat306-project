@@ -5,9 +5,6 @@ jupyter:
     display_name: R
     language: R
     name: ir
-editor: 
-  markdown: 
-    wrap: 72
 ---
 
 By: Andy Hu, Tim Yang, Amanda Gao, Yingqian Shi
@@ -16,18 +13,22 @@ April 16, 2025
 
 ## 1. Introduction
 
-### 1.1 Dataset Description
+### 1.1 Motivation
 
-We obtained our dataset from
-[Kaggle](https://www.kaggle.com/datasets/mohannapd/mobile-price-prediction),
-a data science and machine learning platform. The dataset contains
-various hardware and software features of mobile phones along with their
-corresponding selling prices. The data was collected through an
-observational study by recording existing phone specifications and
-market prices, rather than through a controlled experiment.
+By analyzing key smartphone features, we can use linear regression to examine the relationships between these features and the price of a phone. This inferential approach provides valuable insights into how different phone specifications influence its price. For consumers, it allows them to understand the extent to which factors like weight, CPU performance, memory, and screen resolution contribute to the cost of a phone, helping them evaluate whether the price of any phone they have their eyes on is justified. For companies, this model reveals which features have the strongest relationships with price, enabling them to refine their pricing strategies, and make data-driven decisions regarding product offerings and prices.
+
+Cellphone usage has skyrocketed in the past years as technology has evolved, where over 98% of Americans own a phone [(Sidoti et al., 2024)](https://www.pewresearch.org/internet/fact-sheet/mobile/). The smartphone industry is massive, and there is a lot of competition between major brands like Apple and Samsung; these companies are competing for a share of the more than 1 billion phones sold globally each year [(Laricchia, 2024)](https://www.statista.com/statistics/263437/global-smartphone-sales-to-end-users-since-2007/). Our research seeks to understand how these companies determine their pricing strategies, offering consumers a clearer understanding of the factors that influence the costs of their devices.
+
+### 1.2 Research Question
+
+How are a cell phone's specifications, specifically its resolution (in ppi) and number of cores, associated with its final market price?
+
+### 1.3 Dataset Description
+
+We obtained our dataset from [Kaggle](https://www.kaggle.com/datasets/mohannapd/mobile-price-prediction), a data science and machine learning platform. The dataset contains various hardware and software features of mobile phones along with their corresponding selling prices. The data was collected through an observational study by recording existing phone specifications and market prices, rather than through a controlled experiment.
 
 | Variable Name | Description | Type |
-|------------------------|------------------------|------------------------|
+|----|----|----|
 | Price | Price of a phone (dollars) | Continuous |
 | Weight | Weight of a phone (grams) | Continuous |
 | PPI | Phone Pixel Density (pixels per inch) | Continuous |
@@ -37,44 +38,9 @@ market prices, rather than through a controlled experiment.
 | Internal Memory | Memory in the phone (0GB, 4GB, 8GB, 16GB, 32GB, 64GB, 128GB, 256GB) | Categorical |
 | CPU Cores | Number of Cores in CPU (0, 2, 4, 6, 8) | Categorical |
 
-### 1.2 Pre-selection of Variables
+### 1.4 Pre-selection of Variables
 
-We excluded product ID and sales number because they are unique
-identifiers. We excluded resolution, RAM, rear cam, and front cam
-because we are unsure about their units. We made educated guesses on
-units of variables above since they are not explicitly stated in the
-dataset.
-
-### 1.3 Motivation
-
-By analyzing key smartphone features, we can use linear regression to
-examine the relationships between these features and the price of a
-phone. This inferential approach provides valuable insights into how
-different phone specifications influence its price. For consumers, it
-allows them to understand the extent to which factors like weight, CPU
-performance, memory, and screen resolution contribute to the cost of a
-phone, helping them evaluate whether the price of any phone they have
-their eyes on is justified. For companies, this model reveals which
-features have the strongest relationships with price, enabling them to
-refine their pricing strategies, and make data-driven decisions
-regarding product offerings and prices.
-
-Cellphone usage has skyrocketed in the past years as technology has
-evolved, where over 98% of Americans own a phone [(Sidoti et al.,
-2024)](https://www.pewresearch.org/internet/fact-sheet/mobile/). The
-smartphone industry is massive, and there is a lot of competition
-between major brands like Apple and Samsung; these companies are
-competing for a share of the more than 1 billion phones sold globally
-each year [(Laricchia,
-2024)](https://www.statista.com/statistics/263437/global-smartphone-sales-to-end-users-since-2007/).
-Our research seeks to understand how these companies determine their
-pricing strategies, offering consumers a clearer understanding of the
-factors that influence the costs of their devices.
-
-### 1.4 Research Question
-
-How are a cell phone's specifications, specifically its resolution (in
-ppi) and number of cores, associated with its final market price?
+We excluded product ID and sales number because they are unique identifiers. We excluded resolution, RAM, rear cam, and front cam because we are unsure about their units. Moreover, some of the covariates seem to overlap with one another, like memory vs. RAM which seem to indicate the same thing, but are recorded in differing units in the dataset. We made educated guesses on units of the covariates above since they are not explicitly stated in the dataset.
 
 ## 2. Analysis
 
@@ -92,20 +58,7 @@ suppressMessages({
 
 ### 2.1 Initial Data Cleaning
 
-A summary of the initial data cleaning phase is below:
-
-\- Rename the columns to lowercase and camelCase
-
-\- Drop columns identified in 1.1 Pre-selection of variables
-
-\- Transform the memory column so all measurements are on the same scale
-
-\- Delete rows where there is no memory or where there are no cores, as
-this does not make sense in a cellphone
-
-\- Convert core and memory columns to factors
-
-\- Delete duplicate column entries
+We first drop the columns specified in 1.1 Pre-selection of Variables as they will be irrelevant to our analysis. After exploring the primary statistics about the data and finding unique values for each of the columns, we discovered that there are no NA values. However, the memory column had unique values of 0.004, 0.128, 0.256, 0, 4, 8, 16, 32, 64, 128, which are obviously not all on the same scale. For memory values below 1, we multiply it by 1000 so that all memory measurements are on the same scale of gigabytes. We then discovered that some phones had 0 cores or 0 GB of memory, which would be outliers in the dataset and don't make sense in terms of cellphone characteristics, so we filter out rows with those properties. Finally, we delete duplicate entries in the dataset, bringing us to a total of 75 observations to work with and do our inference on. We are left with 7 covariates and 1 response (price).
 
 ```{r}
 # Load dataset and rename columns
@@ -135,10 +88,6 @@ data = unique(data)
 nrow(data)
 ```
 
-We have 75 data points to do our analysis on after dropping duplicates
-and removing potential data entry errors that were imputed (where memory
-or cores was equal to 0). We are left with 7 covariates and 1 response.
-
 ```{r}
 # Show the dataframe
 head(data)
@@ -146,20 +95,17 @@ head(data)
 
 ### 2.2 Exploratory Data Analysis
 
+For all of the numerical columns in our data, we can plot their relationship in a pairwise manner. The diagonals below simply show the histogram distribution of each variable. The lower triangle shows scatter plots comparing each pair of variables, while the upper triangle shows the correlation coefficients, indicating the strength and direction of the relationship between the two variables.
+
 ```{r}
 # Create a ggpairs plot to visualize the pairwise relationships between numerical variables
 numeric_data = data |> select(where(is.numeric))
 ggpairs(numeric_data)
 ```
 
-We notice `weight` and `thickness` are negatively correlated with price,
-while `ppi`, `freq`, and `battery` are positively correlated with the
-price. Looking at the relationship between each covarite with the
-response, we see that the relationships are all linear. Also, we are
-wary that there may be signs of multicollinearity because many of the
-pairwise plots between covariates seem to have a relationship, such as
-the one between `battery` and `weight` (correlation of 0.826), or `freq`
-and `ppi` (correlation of 0.642).
+The column on the far left shows pairwise plots between our response, the price, with all the other covariates. We notice that `weight` and `thickness` are negatively correlated with price, while `ppi`, `freq`, and `battery` are positively correlated with the price. Looking at the relationship between each covariate with the response, we see that the relationships are all linear. Also, we are wary that there may be signs of multicollinearity because many of the pairwise plots between covariates (between two variables that are not the price column) seem to have a relationship, such as the one between `battery` and `weight` (correlation of 0.826), or `freq` and `ppi` (correlation of 0.642).
+
+The pairwise plots above only graphed our numerical variables, but we can also visualize the effects of our categorical covariates, `core` and `memory`, to the response of price.
 
 ```{r}
 # Boxplot: core vs price
@@ -175,11 +121,7 @@ memory_plot = ggplot(data, aes(x = memory, y = price)) +
 grid.arrange(core_plot, memory_plot, ncol = 2)
 ```
 
-We notice that for both `core` and `memory`, a higher level corresponds
-to a higher selling price. We see that there is very little data for
-`core = 6` and that it is completely within the same bounds as
-`core = 8`, so we combine them together (merge core = 6 into the core =
-8 level).
+We notice that for both `core` and `memory`, a higher level corresponds to a higher selling price. This makes sense as more cores and more memory lead to higher performance, which can make the price of a phone higher. We see that there is very little data for `core = 6` and that it is completely surrounded within the same bounds as `core = 8`, so we combine them together in our data as well (merge `core = 6` into the `core = 8` level). This is done to simplify our model for inference.
 
 ```{r}
 # Recode the level of core = 6 to core = 8.
@@ -188,65 +130,59 @@ data$core <- fct_recode(data$core, "8" = "6")
 
 ### 2.3 Methodology and Assumptions
 
-The objective is to regress on price, given a collection of different
-covariates describing a phone's characteristics. Since we are modelling
-a numerical response, then it follows that a linear regression model may
-be suitable for the task. We will incorporate an additive linear model
-because it is easier to interpret and isolate effects of different
-variables.
+The objective is to regress on price, given a collection of different covariates describing a phone's characteristics. Since we are modelling a numerical response, then it follows that a linear regression model may be suitable for the task. We will incorporate an additive linear model because it is easier to interpret and simpler to isolate effects of different variables. Some assumptions we make in this linear model are listed below:
 
-Some assumptions we make in this linear model are described below:
+1.  **Linearity:** The relationship between the price and the phone characteristics is linear.
+2.  **Independence:** Each phone example comes from an independent and identically distributed dataset. This means that the price of one phone is marketed independent of the price of another.
+3.  **Homoscedasticity:** The residuals exhibit constant variance. This means that the variability of the difference between the actual phone price and predicted phone price should stay roughly the same across different phone characteristics.
+4.  **Normality:** The residuals comes from a normal distribution. This means that the difference between the actual and predicted phone prices should follow a bell curve shape. This helps to ensure that the regression model works as expected and provides reasonable estimates for hypothesis testing and confidence intervals.
 
-1\. Linearity: The relationship between the price and the phone
-characteristics is linear.
-
-2\. Independence: Each phone example comes from an independent and
-identically distributed dataset. This means that the price of one phone
-is marketed independent of the price of another.
-
-3\. Homoscedasticity: The residuals exhibit constant variance.
-
-4\. Normality: The residuals comes from a normal distribution.
-
-We will revisit some of these after fitting our model to verify our
-model diagnostics and suitability of a linear model. Some ways we can do
-this is to test homoscedasticity through a residual vs. fitted value
-plot, and we can also test normality through a QQ plot.
+We will revisit some of these assumptions after fitting our model to verify model diagnostics and the suitability of a linear model. Some ways we can do this is to test homoscedasticity through a residual vs. fitted value plot, and we can also test normality through a QQ plot.
 
 ### 2.4 Model Selection
 
-As a result of our EDA and wariness of multicollinearity, we begin by
-checking the VIF scores for a full model including all covariates
+Recalling back to the exploratory data analysis we conducted, we should be wary of multicollinearity because many of the pairwise plots between covariates showed a strong relationship. This is something to be wary of because when two covariates are highly correlated, it can lead to unstable model coefficients that cancel each other out, and these coefficients will not be meaningful in terms of doing inference or drawing reasonable relationships between variables. One way to check for high multicollinearity is to look at the Variance Inflation Factor (VIF) scores. We begin by checking the VIF scores for a full model including all covariates.
 
 ```{r}
 vif(lm(price ~ ., data = data))
 ```
 
-We notice that `battery` has the highest standardized GVIF score of
-nearly 3, indicating high levels of multicollinearity. As such, we will
-remove it from the model and recheck the GVIF scores to see if there are
-any others to consider.
+We notice that `battery` has the highest standardized GVIF score of nearly 3, indicating high levels of multicollinearity. As such, we will remove it from the model and recheck the GVIF scores to see if there are any others to consider.
 
 ```{r}
 vif(lm(price ~ . - battery, data = data))
 ```
 
-We observe that the highest standardized GVIF score is 1.87 for the
-covariate `ppi`, which is acceptable and indicates low
-multicollinearity. With this confidence, we can now proceed with model
-selection. By default, the stepwise selection function `stepAIC` below
-starts with the full model and evaluates all possible models by adding
-or removing one covariate at each step. It continues this process until
-it reaches the model with the lowest (best) AIC score, terminating once
-no further improvement in the AIC score is possible.
+We observe that the highest standardized GVIF score is 1.87 for the covariate `ppi`, which is acceptable and indicates low multicollinearity. With this confidence, we can now proceed with model selection.
+
+We will run a stepwise model selection method which starts with a model that includes all covariates. It then goes through a series of steps, where it considers all models with one more variable or one less variable, and checks how well each new model fits the data. This continues until the model finds the model with the best score and terminates when no further improvements in the score can be made.
+
+The score we will be using is the AIC score, where a lower AIC score indicates a better model fit. We will be using this because it not only describes how well the model fits the data, but also penalizes a model for being too complex; this is important because simpler models are preferred for inference unless the added complexity can be justified to significantly improve the model fit. Choosing the lowest (best) AIC score indicates a model that is both accurate and simple.
+
+We will also keep track of $R^2$ and adjusted $R^2$ values, although this is not the criterion upon which we are evaluating different models. $R^2$ measures how well the model explains the variation in our data, while adjusted $R^2$ is the same but penalizes for more complex models similar to the AIC score. The table below shows the stepwise selection procedure:
 
 ```{r}
 full_model_minus_collinearity = lm(price ~ . - battery, data = data)
-reduced_model = MASS::stepAIC(full_model_minus_collinearity, direction = "both", trace = F)
-summary(reduced_model)
+reduced_model = MASS::stepAIC(full_model_minus_collinearity, direction = "both")
 ```
 
-We will also compute the $C_p$ value of our model below:
+```{r}
+# Print R² and Adjusted R² for each step along the stepwise selection above (there was only one step)
+
+cat("Full model (no collinearity) - R²: ", summary(full_model_minus_collinearity)$r.squared, "\n")
+cat("Full model (no collinearity) - Adjusted R²: ", summary(full_model_minus_collinearity)$adj.r.squared, "\n")
+
+cat("Reduced model - R²: ", summary(reduced_model)$r.squared, "\n")
+cat("Reduced model - Adjusted R²: ", summary(reduced_model)$adj.r.squared, "\n")
+```
+
+From stepwise selection based on the AIC criterion, we reach our final reduced model which removed weight (from the already removed battery due to its high standardized GVIF).
+
+We see that not only did the AIC score improve, but the adjusted $R^2$ value went up. This means that removing the `weight` covariate did not significantly reduce the model's ability to explain the data, making its removal justifiable.
+
+When we went to the final model with less covariates, the $R^2$ value went down; this is expected because this metric does not penalize complexity, so a more complex model will always have an $R^2$ value greater than or equal to one of its nested model. After all, more covariates offers more explanatory power, even if not by much.
+
+We can also calculate Mallow's $C_p$ value, which compares a model's fit to the perfect model while also accounting for complexity. We summarize the main model statistics in the two tables below:
 
 ```{r}
 # Get mean squared residuals of the full model minus collinearity
@@ -254,16 +190,12 @@ n = nrow(data)
 p_full = length(full_model_minus_collinearity$coefficients)
 MS_res_full = sum(residuals(full_model_minus_collinearity)^2) / (n - p_full)
 
-# Get SS of the reduced model
+# Get SS of the reduced model and compute cp
 rss = sum(residuals(reduced_model)^2)
 k = length(reduced_model$coefficients)
 cp = rss / MS_res_full - (n - 2 * k)
+cp
 ```
-
-From using backward selection, we reach our final reduced model which
-removed weight (from the already removed battery due to its high
-standardized GVIF). We summarize the main model statistics in the table
-below:
 
 | Metric         | Value  |
 |----------------|--------|
@@ -274,14 +206,23 @@ below:
 |----------------|------------------|----------|
 | Mallow's $C_p$ | 10.1530368897259 | 11       |
 
-### 2.5 Model Diagnostics
+### 2.5 The Final Model
+
+Our final model regressed price on 5 covariates: `ppi`, `core`, `freq`, `memory`, and `thickness` (`battery` and `weight` were removed from the original 7 covariates).
+
+```{r}
+summary(reduced_model)
+```
+
+The coefficient column is the covariate name. The estimate column gives the estimated effect that the covariate has on the price. The significance at a 5% level indicates if a covariate has has a real and significant effect on the price, and the relationship is not just random chance.
+
+### 2.6 Model Diagnostics
 
 ```{r}
 vif(reduced_model)
 ```
 
-We do not have high standardized GVIF values, letting us disregard high
-multicollinearity issues.
+We do not have high standardized GVIF values, letting us disregard high multicollinearity issues. We now verify the linear model assumptions about homoscedasticity and normality of residuals.
 
 ```{r}
 residuals_df = data.frame(
@@ -306,28 +247,15 @@ qq_plot = ggplot(residuals_df, aes(sample = residuals)) +
 grid.arrange(res_plot, qq_plot, ncol = 2)
 ```
 
-On the left, we plotted residuals vs fitted value, and the plot shows no
-trends or noticeable relationship, allowing us to conclude
-homoscedasticity of the residuals (constant variance). By analyzing the
-QQ plot on the right, we see that our errors are normally distributed
-because they line up very well with the qqline, and do not show any
-obvious signs of light or heavy tailed distributions.
+On the left, we plotted residuals vs. fitted value, and the plot shows no trends or noticeable relationship; this random scatter of points around 0 means that the variability of the residuals is consistent across different examples and phone characteristics, allowing us to conclude homoscedasticity of the residuals (constant variance).
+
+By analyzing the QQ plot on the right, we observe that the model's errors match a normal distribution fairly well. In a QQ plot, the points represent the quantiles of our model's prediction errors, and the diagonal qqline shows the expected quantiles if the errors were normal. Since our points closely follow the line and there are no noticeable patterns, we conclude that the errors are normally distributed.
 
 ## 3. Conclusion
 
 ### Summary
 
-We first analyzed our data by pre-selecting variables and disregarding
-useless ones such as ID or sales number fields. Then, we did some
-initial data pre-processing which included dropping duplicates,
-transforming data to the same scale, and encoding categorical data as
-factors in R. We then checked for multicollinearity issues then used the
-AIC criterion to do model selection, resulting in a model that regresses
-on `ppi`, `core`, `freq`, `memory`, and `thickness`. We then underwent
-model diagnostics to verify our initial assumptions about
-homoscedasticity of residuals and if they come from a normal
-distribution. A summary of the main statistics related to the final
-model is given below:
+We first analyzed our data by pre-selecting variables and disregarding irrelevant ones such as ID or sales number fields. Then, we did initial data pre-processing alongside exploraty data analysis, which included dropping duplicates, transforming data to the same scale, and encoding categorical data as factors in R. We then checked for multicollinearity issues and used the AIC criterion to do model selection, resulting in a model that regresses on `ppi`, `core`, `freq`, `memory`, and `thickness`. We then underwent model diagnostics to verify our initial assumptions about homoscedasticity of residuals and if they come from a normal distribution. A summary of the main statistics related to the final model is given below:
 
 | Metric         | Value  |
 |----------------|--------|
@@ -338,61 +266,30 @@ model is given below:
 |----------------|------------------|----------|
 | Mallow's $C_p$ | 10.1530368897259 | 11       |
 
-Being able to explain 90% (adjusted $R^2$) of the variability in price
-after being penalized is impressive, and our $C_p$ value is nearly as
-expected, indicating a relatively good model fit.
+Being able to explain 90% (adjusted $R^2$) of the variability in price after being penalized is impressive, and our $C_p$ value is nearly as expected, indicating a relatively good model fit.
 
 ### Findings
 
-From our final model, we discover that the covariates which contribute
-positively to the price are `ppi` (screen resolution), `core` (both 4
-and 8 cores), `freq`, `memory` (all levels but 8GB). On the other hand,
-`thickness` and `memory8` are negatively associated with the price.
+From our final model, we discover that the covariates which contribute positively to the price are `ppi` (screen resolution), `core` (both 4 and 8 cores), `freq`, `memory` (all levels but 8GB). On the other hand, `thickness` and `memory8` are negatively associated with the price. It is worth noting that `freq`, `memory8`, and `memory16` are all statistically insignificant at the 5% level. This means that despite their positive or negative contribution to the price predictions of a cell phone, we could also choose to ignore their effects.
 
-In addressing our original research question, which focused on the
-effects of screen resolution (ppi) and the number of cores, we find that
-`ppi`, `core4`, and `core8` remain significant even after model
-selection. Their p-values are as follows: 0.00036 for `ppi`, 0.040 for
-`core4`, and 0.00011 for `core8`. An interpretation of the coefficients
-is that each additional more pixel per inch in screen resolution is
-associated with a $\$1.19$ increase in the price Relative to a baseline
-level of two cores, 4 cores is associated with an increase in price by
-$\$226$ while 8 cores is associated with an increase in price by
-$\$506$. These findings make sense given the nature of the variables:
-more cores enhance the phone’s performance and require more advanced
-hardware, while a higher screen resolution results in a sharper display
-capable of handling high-quality images.
+In addressing our original research question, which focused on the effects of screen resolution (ppi) and the number of cores, we find that `ppi`, `core4`, and `core8` remain significant even after model selection. Their p-values are as follows: 0.00036 for `ppi`, 0.040 for `core4`, and 0.00011 for `core8`. An interpretation of the coefficients is that each additional more pixel per inch in screen resolution is associated with a $\$1.19$ increase in the price. Relative to a baseline level of two cores, 4 cores is associated with an increase in price by $\$226$ while 8 cores is associated with an increase in price by $\$506$. These findings make sense given the nature of the variables: more cores enhance the phone’s performance and require more advanced hardware, while a higher screen resolution results in a sharper display capable of handling high-quality images.
+
+### Business Implications
+
+From the customer’s perspective, our model helps customers understand how different features influence a phone’s price. Knowing this, buyers can evaluate whether a phone is priced unusually high or low without the strong features to support it. From the company’s perspective, manufacturers can use these insights to fine-tune their pricing and product design strategies. Features like higher screen resolution and CPU cores have a strong positive association with price, which supports using them as key differentiators in premium models in segmenting product lines.
 
 ### Limitations
 
-As the data was collected from an observational study, there is a risk
-of confounding variables not included in our analysis, such as brand
-(Apple vs Android), age of the phone (newer phones are more expensive
-than older phones in general). Since we used an additive regression
-model, we also overlooked potential interaction effects between
-variables, which could affect the model’s explanatory power. It's worth
-noting that as technology evolves over time, where a 128GB RAM phone
-might seem crazy now, but might be normal in the future, prices of
-phones based on such characteristics could evolve and change, and this
-it not accounted for by our model.
+As the data was collected from an observational study, there is a risk of confounding variables not included in our analysis, such as brand (Apple vs Android), age of the phone (newer phones are more expensive than older phones in general). Since we used an additive regression model, we overlooked potential interaction effects between variables, which could affect the model’s explanatory power. Also, as technology evolves over time, prices of phones based on current tech can change. In fact, phone specifications may evolve such that the different levels of `core` and `memory` in our model may become outdated in the future.
 
 ### Future Research Questions
 
-Future research could explore confounding variables such as including
-brand or camera quality, and could also explore interaction effects to
-reveal relationships between covariates. As prices related to certain
-technological specs could change as technology evolves over time, a
-study could also consider temporal effects and time series data to
-predict prices of phones in the future.
+Future research could explore confounding variables such as including brand or camera quality, and could also explore interaction effects to reveal relationships between covariates. As prices related to certain technological specs could evolve over time, a study could also consider temporal effects and time series data to predict prices of phones in the future.
 
 ## References
 
-Laricchia, F. (2024, October 15). *Number of smartphones sold to end
-users worldwide from 2007 to 2023*. Statista.
-https://www.statista.com/statistics/263437/global-smartphone-sales-to-end-users-since-2007/
+Laricchia, F. (2024, October 15). *Number of smartphones sold to end users worldwide from 2007 to 2023*. Statista. https://www.statista.com/statistics/263437/global-smartphone-sales-to-end-users-since-2007/
 
-Sidoti, O., Dawson, W., Gelles-Watnick, R., Faverio, M., Atske, S.,
-Radde, K., & Park, E. (2024, November 13). *Mobile Fact Sheet*. Pew
-Research Center. https://www.pewresearch.org/internet/fact-sheet/mobile/
+Sidoti, O., Dawson, W., Gelles-Watnick, R., Faverio, M., Atske, S., Radde, K., & Park, E. (2024, November 13). *Mobile Fact Sheet*. Pew Research Center. https://www.pewresearch.org/internet/fact-sheet/mobile/
 
 Younesi, F. (2022, August 21). *Mobile Price Prediction*. Kaggle. https://www.kaggle.com/datasets/mohannapd/mobile-price-prediction/data

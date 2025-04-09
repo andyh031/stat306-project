@@ -7528,7 +7528,10 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="1.-Introduction">1. Introduction<a class="anchor-link" href="#1.-Introduction">¶</a></h2><h3 id="1.1-Dataset-Description">1.1 Dataset Description<a class="anchor-link" href="#1.1-Dataset-Description">¶</a></h3><p>We obtained our dataset from <a href="https://www.kaggle.com/datasets/mohannapd/mobile-price-prediction">Kaggle</a>, a data science and machine learning platform. The dataset contains various hardware and software features of mobile phones along with their corresponding selling prices. The data was collected through an observational study by recording existing phone specifications and market prices, rather than through a controlled experiment.</p>
+<h2 id="1.-Introduction">1. Introduction<a class="anchor-link" href="#1.-Introduction">¶</a></h2><h3 id="1.1-Motivation">1.1 Motivation<a class="anchor-link" href="#1.1-Motivation">¶</a></h3><p>By analyzing key smartphone features, we can use linear regression to examine the relationships between these features and the price of a phone. This inferential approach provides valuable insights into how different phone specifications influence its price. For consumers, it allows them to understand the extent to which factors like weight, CPU performance, memory, and screen resolution contribute to the cost of a phone, helping them evaluate whether the price of any phone they have their eyes on is justified. For companies, this model reveals which features have the strongest relationships with price, enabling them to refine their pricing strategies, and make data-driven decisions regarding product offerings and prices.</p>
+<p>Cellphone usage has skyrocketed in the past years as technology has evolved, where over 98% of Americans own a phone <a href="https://www.pewresearch.org/internet/fact-sheet/mobile/">(Sidoti et al., 2024)</a>. The smartphone industry is massive, and there is a lot of competition between major brands like Apple and Samsung; these companies are competing for a share of the more than 1 billion phones sold globally each year <a href="https://www.statista.com/statistics/263437/global-smartphone-sales-to-end-users-since-2007/">(Laricchia, 2024)</a>. Our research seeks to understand how these companies determine their pricing strategies, offering consumers a clearer understanding of the factors that influence the costs of their devices.</p>
+<h3 id="1.2-Research-Question">1.2 Research Question<a class="anchor-link" href="#1.2-Research-Question">¶</a></h3><p>How are a cell phone's specifications, specifically its resolution (in ppi) and number of cores, associated with its final market price?</p>
+<h3 id="1.3-Dataset-Description">1.3 Dataset Description<a class="anchor-link" href="#1.3-Dataset-Description">¶</a></h3><p>We obtained our dataset from <a href="https://www.kaggle.com/datasets/mohannapd/mobile-price-prediction">Kaggle</a>, a data science and machine learning platform. The dataset contains various hardware and software features of mobile phones along with their corresponding selling prices. The data was collected through an observational study by recording existing phone specifications and market prices, rather than through a controlled experiment.</p>
 <table>
 <thead>
 <tr>
@@ -7580,10 +7583,7 @@ a.anchor-link {
 </tr>
 </tbody>
 </table>
-<h3 id="1.2-Pre-selection-of-Variables">1.2 Pre-selection of Variables<a class="anchor-link" href="#1.2-Pre-selection-of-Variables">¶</a></h3><p>We excluded product ID and sales number because they are unique identifiers.  We excluded resolution, RAM, rear cam, and front cam because we are unsure about their units. We made educated guesses on units of variables above since they are not explicitly stated in the dataset.</p>
-<h3 id="1.3-Motivation">1.3 Motivation<a class="anchor-link" href="#1.3-Motivation">¶</a></h3><p>By analyzing key smartphone features, we can use linear regression to examine the relationships between these features and the price of a phone. This inferential approach provides valuable insights into how different phone specifications influence its price. For consumers, it allows them to understand the extent to which factors like weight, CPU performance, memory, and screen resolution contribute to the cost of a phone, helping them evaluate whether the price of any phone they have their eyes on is justified. For companies, this model reveals which features have the strongest relationships with price, enabling them to refine their pricing strategies, and make data-driven decisions regarding product offerings and prices.</p>
-<p>Cellphone usage has skyrocketed in the past years as technology has evolved, where over 98% of Americans own a phone <a href="https://www.pewresearch.org/internet/fact-sheet/mobile/">(Sidoti et al., 2024)</a>. The smartphone industry is massive, and there is a lot of competition between major brands like Apple and Samsung; these companies are competing for a share of the more than 1 billion phones sold globally each year <a href="https://www.statista.com/statistics/263437/global-smartphone-sales-to-end-users-since-2007/">(Laricchia, 2024)</a>. Our research seeks to understand how these companies determine their pricing strategies, offering consumers a clearer understanding of the factors that influence the costs of their devices.</p>
-<h3 id="1.4-Research-Question">1.4 Research Question<a class="anchor-link" href="#1.4-Research-Question">¶</a></h3><p>How are a cell phone's specifications, specifically its resolution (in ppi) and number of cores, associated with its final market price?</p>
+<h3 id="1.4-Pre-selection-of-Variables">1.4 Pre-selection of Variables<a class="anchor-link" href="#1.4-Pre-selection-of-Variables">¶</a></h3><p>We excluded product ID and sales number because they are unique identifiers.  We excluded resolution, RAM, rear cam, and front cam because we are unsure about their units. Moreover, some of the covariates seem to overlap with one another, like memory vs. RAM which seem to indicate the same thing, but are recorded in differing units in the dataset. We made educated guesses on units of the covariates above since they are not explicitly stated in the dataset.</p>
 </div>
 </div>
 </div>
@@ -7638,15 +7638,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>A summary of the initial data cleaning phase is below:</p>
-<ul>
-<li>Rename the columns to lowercase and camelCase</li>
-<li>Drop columns identified in 1.1 Pre-selection of variables</li>
-<li>Transform the memory column so all measurements are on the same scale</li>
-<li>Delete rows where there is no memory or where there are no cores, as this does not make sense in a cellphone</li>
-<li>Convert core and memory columns to factors</li>
-<li>Delete duplicate column entries</li>
-</ul>
+<p>We first drop the columns specified in 1.1 Pre-selection of Variables as they will be irrelevant to our analysis. After exploring the primary statistics about the data and finding unique values for each of the columns, we discovered that there are no NA values. However, the memory column had unique values of 0.004, 0.128, 0.256, 0, 4, 8, 16, 32, 64, 128, which are obviously not all on the same scale. For memory values below 1, we multiply it by 1000 so that all memory measurements are on the same scale of gigabytes. We then discovered that some phones had 0 cores or 0 GB of memory, which would be outliers in the dataset and don't make sense in terms of cellphone characteristics, so we filter out rows with those properties. Finally, we delete duplicate entries in the dataset, bringing us to a total of 75 observations to work with and do our inference on. We are left with 7 covariates and 1 response (price).</p>
 </div>
 </div>
 </div>
@@ -7700,17 +7692,6 @@ a.anchor-link {
 </div>
 </div>
 </div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=2815b8f4-e63d-4dc8-ab9a-b9ce555d43e1">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>We have 75 data points to do our analysis on after dropping duplicates and removing potential data entry errors that were imputed (where memory or cores was equal to 0). We are left with 7 covariates and 1 response.</p>
-</div>
-</div>
-</div>
 </div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=0f2cf2bc-0154-4a01-bca5-b69afe75e03c">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
@@ -7759,7 +7740,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="2.2-Exploratory-Data-Analysis">2.2 Exploratory Data Analysis<a class="anchor-link" href="#2.2-Exploratory-Data-Analysis">¶</a></h3>
+<h3 id="2.2-Exploratory-Data-Analysis">2.2 Exploratory Data Analysis<a class="anchor-link" href="#2.2-Exploratory-Data-Analysis">¶</a></h3><p>For all of the numerical columns in our data, we can plot their relationship in a pairwise manner. The diagonals below simply show the histogram distribution of each variable. The lower triangle shows scatter plots comparing each pair of variables, while the upper triangle shows the correlation coefficients, indicating the strength and direction of the relationship between the two variables.</p>
 </div>
 </div>
 </div>
@@ -7798,7 +7779,8 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>We notice <code>weight</code> and <code>thickness</code> are negatively correlated with price, while <code>ppi</code>, <code>freq</code>, and <code>battery</code> are positively correlated with the price. Looking at the relationship between each covarite with the response, we see that the relationships are all linear. Also, we are wary that there may be signs of multicollinearity because many of the pairwise plots between covariates seem to have a relationship, such as the one between <code>battery</code> and <code>weight</code> (correlation of 0.826), or <code>freq</code> and <code>ppi</code> (correlation of 0.642).</p>
+<p>The column on the far left shows pairwise plots between our response, the price, with all the other covariates. We notice that <code>weight</code> and <code>thickness</code> are negatively correlated with price, while <code>ppi</code>, <code>freq</code>, and <code>battery</code> are positively correlated with the price. Looking at the relationship between each covariate with the response, we see that the relationships are all linear. Also, we are wary that there may be signs of multicollinearity because many of the pairwise plots between covariates (between two variables that are not the price column) seem to have a relationship, such as the one between <code>battery</code> and <code>weight</code> (correlation of 0.826), or <code>freq</code> and <code>ppi</code> (correlation of 0.642).</p>
+<p>The pairwise plots above only graphed our numerical variables, but we can also visualize the effects of our categorical covariates, <code>core</code> and <code>memory</code>, to the response of price.</p>
 </div>
 </div>
 </div>
@@ -7845,7 +7827,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>We notice that for both <code>core</code> and <code>memory</code>, a higher level corresponds to a higher selling price. We see that there is very little data for <code>core = 6</code> and that it is completely within the same bounds as <code>core = 8</code>, so we combine them together (merge core = 6 into the core = 8 level).</p>
+<p>We notice that for both <code>core</code> and <code>memory</code>, a higher level corresponds to a higher selling price. This makes sense as more cores and more memory lead to higher performance, which can make the price of a phone higher. We see that there is very little data for <code>core = 6</code> and that it is completely surrounded within the same bounds as <code>core = 8</code>, so we combine them together in our data as well (merge <code>core = 6</code> into the <code>core = 8</code> level). This is done to simplify our model for inference.</p>
 </div>
 </div>
 </div>
@@ -7871,15 +7853,14 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="2.3-Methodology-and-Assumptions">2.3 Methodology and Assumptions<a class="anchor-link" href="#2.3-Methodology-and-Assumptions">¶</a></h3><p>The objective is to regress on price, given a collection of different covariates describing a phone's characteristics. Since we are modelling a numerical response, then it follows that a linear regression model may be suitable for the task. We will incorporate an additive linear model because it is easier to interpret and isolate effects of different variables.</p>
-<p>Some assumptions we make in this linear model are described below:</p>
+<h3 id="2.3-Methodology-and-Assumptions">2.3 Methodology and Assumptions<a class="anchor-link" href="#2.3-Methodology-and-Assumptions">¶</a></h3><p>The objective is to regress on price, given a collection of different covariates describing a phone's characteristics. Since we are modelling a numerical response, then it follows that a linear regression model may be suitable for the task. We will incorporate an additive linear model because it is easier to interpret and simpler to isolate effects of different variables. Some assumptions we make in this linear model are listed below:</p>
 <ol>
-<li>Linearity: The relationship between the price and the phone characteristics is linear.</li>
-<li>Independence: Each phone example comes from an independent and identically distributed dataset. This means that the price of one phone is marketed independent of the price of another.</li>
-<li>Homoscedasticity: The residuals exhibit constant variance.</li>
-<li>Normality: The residuals comes from a normal distribution.</li>
+<li><strong>Linearity:</strong> The relationship between the price and the phone characteristics is linear.</li>
+<li><strong>Independence:</strong> Each phone example comes from an independent and identically distributed dataset. This means that the price of one phone is marketed independent of the price of another.</li>
+<li><strong>Homoscedasticity:</strong> The residuals exhibit constant variance. This means that the variability of the difference between the actual phone price and predicted phone price should stay roughly the same across different phone characteristics.</li>
+<li><strong>Normality:</strong> The residuals comes from a normal distribution. This means that the difference between the actual and predicted phone prices should follow a bell curve shape. This helps to ensure that the regression model works as expected and provides reasonable estimates for hypothesis testing and confidence intervals.</li>
 </ol>
-<p>We will revisit some of these after fitting our model to verify our model diagnostics and suitability of a linear model. Some ways we can do this is to test homoscedasticity through a residual vs. fitted value plot, and we can also test normality through a QQ plot.</p>
+<p>We will revisit some of these assumptions after fitting our model to verify model diagnostics and the suitability of a linear model. Some ways we can do this is to test homoscedasticity through a residual vs. fitted value plot, and we can also test normality through a QQ plot.</p>
 </div>
 </div>
 </div>
@@ -7901,7 +7882,7 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>As a result of our EDA and wariness of multicollinearity, we begin by checking the VIF scores for a full model including all covariates</p>
+<p>Recalling back to the exploratory data analysis we conducted, we should be wary of multicollinearity because many of the pairwise plots between covariates showed a strong relationship. This is something to be wary of because when two covariates are highly correlated, it can lead to unstable model coefficients that cancel each other out, and these coefficients will not be meaningful in terms of doing inference or drawing reasonable relationships between variables. One way to check for high multicollinearity is to look at the Variance Inflation Factor (VIF) scores.  We begin by checking the VIF scores for a full model including all covariates.</p>
 </div>
 </div>
 </div>
@@ -8002,7 +7983,10 @@ a.anchor-link {
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>We observe that the highest standardized GVIF score is 1.87 for the covariate <code>ppi</code>, which is acceptable and indicates low multicollinearity. With this confidence, we can now proceed with model selection. By default, the stepwise selection function <code>stepAIC</code> below starts with the full model and evaluates all possible models by adding or removing one covariate at each step. It continues this process until it reaches the model with the lowest (best) AIC score, terminating once no further improvement in the AIC score is possible.</p>
+<p>We observe that the highest standardized GVIF score is 1.87 for the covariate <code>ppi</code>, which is acceptable and indicates low multicollinearity. With this confidence, we can now proceed with model selection.</p>
+<p>We will run a stepwise model selection method which starts with a model that includes all covariates. It then goes through a series of steps, where it considers all models with one more variable or one less variable, and checks how well each new model fits the data. This continues until the model finds the model with the best score and terminates when no further improvements in the score can be made.</p>
+<p>The score we will be using is the AIC score, where a lower AIC score indicates a better model fit. We will be using this because it not only describes how well the model fits the data, but also penalizes a model for being too complex; this is important because simpler models are preferred for inference unless the added complexity can be justified to significantly improve the model fit. Choosing the lowest (best) AIC score indicates a model that is both accurate and simple.</p>
+<p>We will also keep track of $R^2$ and adjusted $R^2$ values, although this is not the criterion upon which we are evaluating different models. $R^2$ measures how well the model explains the variation in our data, while adjusted $R^2$ is the same but penalizes for more complex models similar to the AIC score. The table below shows the stepwise selection procedure:</p>
 </div>
 </div>
 </div>
@@ -8015,8 +7999,197 @@ a.anchor-link {
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-r"><pre><span></span><span class="n">full_model_minus_collinearity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">lm</span><span class="p">(</span><span class="n">price</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">battery</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">)</span>
-<span class="n">reduced_model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MASS</span><span class="o">::</span><span class="nf">stepAIC</span><span class="p">(</span><span class="n">full_model_minus_collinearity</span><span class="p">,</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"both"</span><span class="p">,</span><span class="w"> </span><span class="n">trace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="bp">F</span><span class="p">)</span>
-<span class="nf">summary</span><span class="p">(</span><span class="n">reduced_model</span><span class="p">)</span>
+<span class="n">reduced_model</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">MASS</span><span class="o">::</span><span class="nf">stepAIC</span><span class="p">(</span><span class="n">full_model_minus_collinearity</span><span class="p">,</span><span class="w"> </span><span class="n">direction</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">"both"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Start:  AIC=810.89
+price ~ (weight + ppi + core + freq + memory + battery + thickness) - 
+    battery
+
+            Df Sum of Sq     RSS    AIC
+- weight     1      6563 2708216 809.07
+&lt;none&gt;                   2701653 810.89
+- freq       1    154878 2856531 813.07
+- ppi        1    433988 3135641 820.06
+- thickness  1    491945 3193598 821.44
+- core       2   1125202 3826855 833.00
+- memory     5   5235383 7937036 881.72
+
+Step:  AIC=809.07
+price ~ ppi + core + freq + memory + thickness
+
+            Df Sum of Sq     RSS    AIC
+&lt;none&gt;                   2708216 809.07
++ weight     1      6563 2701653 810.89
+- freq       1    148374 2856590 811.07
+- thickness  1    514022 3222238 820.11
+- ppi        1    601518 3309734 822.12
+- core       2   1125620 3833835 831.14
+- memory     5   5408482 8116697 881.40
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=3af1cdf9-5773-48e4-aa84-9b56cee86fa1">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-r"><pre><span></span><span class="c1"># Print R² and Adjusted R² for each step along the stepwise selection above (there was only one step)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">"Full model (no collinearity) - R²: "</span><span class="p">,</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="n">full_model_minus_collinearity</span><span class="p">)</span><span class="o">$</span><span class="n">r.squared</span><span class="p">,</span><span class="w"> </span><span class="s">"\n"</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">"Full model (no collinearity) - Adjusted R²: "</span><span class="p">,</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="n">full_model_minus_collinearity</span><span class="p">)</span><span class="o">$</span><span class="n">adj.r.squared</span><span class="p">,</span><span class="w"> </span><span class="s">"\n"</span><span class="p">)</span>
+
+<span class="nf">cat</span><span class="p">(</span><span class="s">"Reduced model - R²: "</span><span class="p">,</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="n">reduced_model</span><span class="p">)</span><span class="o">$</span><span class="n">r.squared</span><span class="p">,</span><span class="w"> </span><span class="s">"\n"</span><span class="p">)</span>
+<span class="nf">cat</span><span class="p">(</span><span class="s">"Reduced model - Adjusted R²: "</span><span class="p">,</span><span class="w"> </span><span class="nf">summary</span><span class="p">(</span><span class="n">reduced_model</span><span class="p">)</span><span class="o">$</span><span class="n">adj.r.squared</span><span class="p">,</span><span class="w"> </span><span class="s">"\n"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output" data-mime-type="text/plain" tabindex="0">
+<pre>Full model (no collinearity) - R²:  0.9145699 
+Full model (no collinearity) - Adjusted R²:  0.8996535 
+Reduced model - R²:  0.9143623 
+Reduced model - Adjusted R²:  0.9009814 
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bd15f33d-cfca-4120-80ff-6259fc0964a0">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<p>From stepwise selection based on the AIC criterion, we reach our final reduced model which removed weight (from the already removed battery due to its high standardized GVIF).</p>
+<p>We see that not only did the AIC score improve, but the adjusted $R^2$ value went up. This means that removing the <code>weight</code> covariate did not significantly reduce the model's ability to explain the data, making its removal justifiable.</p>
+<p>When we went to the final model with less covariates, the $R^2$ value went down; this is expected because this metric does not penalize complexity, so a more complex model will always have an $R^2$ value greater than or equal to one of its nested model. After all, more covariates offers more explanatory power, even if not by much.</p>
+<p>We can also calculate Mallow's $C_p$ value, which compares a model's fit to the perfect model while also accounting for complexity. We summarize the main model statistics in the two tables below:</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=6e31cbdf-c4a6-40fb-b490-b6c96f07a226">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-r"><pre><span></span><span class="c1"># Get mean squared residuals of the full model minus collinearity</span>
+<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">p_full</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">full_model_minus_collinearity</span><span class="o">$</span><span class="n">coefficients</span><span class="p">)</span>
+<span class="n">MS_res_full</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">residuals</span><span class="p">(</span><span class="n">full_model_minus_collinearity</span><span class="p">)</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">p_full</span><span class="p">)</span>
+
+<span class="c1"># Get SS of the reduced model and compute cp</span>
+<span class="n">rss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">residuals</span><span class="p">(</span><span class="n">reduced_model</span><span class="p">)</span><span class="o">^</span><span class="m">2</span><span class="p">)</span>
+<span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">reduced_model</span><span class="o">$</span><span class="n">coefficients</span><span class="p">)</span>
+<span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rss</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">MS_res_full</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
+<span class="n">cp</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output" data-mime-type="text/html" tabindex="0">
+10.1530368897259
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=16bd4bad-7c52-412f-8743-ed5b3e660aaf">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<table>
+<tr>
+<td>
+<table>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+<tr>
+<td>$R^2$</td>
+<td>0.9144</td>
+</tr>
+<tr>
+<td>Adjusted $R^2$</td>
+<td>0.901</td>
+</tr>
+</table>
+</td>
+<td style="padding-left: 30px;">
+<table>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+<th>Expected</th>
+</tr>
+<tr>
+<td>Mallow's $C_p$</td>
+<td>10.1530368897259</td>
+<td>11</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=dbbcbbc9-7caf-448d-9b76-43871a2f7d57">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
+<h3 id="2.5-The-Final-Model">2.5 The Final Model<a class="anchor-link" href="#2.5-The-Final-Model">¶</a></h3><p>Our final model regressed price on 5 covariates: <code>ppi</code>, <code>core</code>, <code>freq</code>, <code>memory</code>, and <code>thickness</code> (<code>battery</code> and <code>weight</code> were removed from the original 7 covariates).</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell" id="cell-id=ca5f1311-f266-4927-a3db-2a2fee8b1158">
+<div class="jp-Cell-inputWrapper" tabindex="0">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-r"><pre><span></span><span class="nf">summary</span><span class="p">(</span><span class="n">reduced_model</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -8063,80 +8236,13 @@ F-statistic: 68.33 on 10 and 64 DF,  p-value: &lt; 2.2e-16
 </div>
 </div>
 </div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=bd15f33d-cfca-4120-80ff-6259fc0964a0">
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=cd9e7328-5bd8-4481-97b0-cf5866fb12cb">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>We will also compute the $C_p$ value of our model below:</p>
-</div>
-</div>
-</div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6e31cbdf-c4a6-40fb-b490-b6c96f07a226">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
-<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
-<div class="cm-editor cm-s-jupyter">
-<div class="highlight hl-r"><pre><span></span><span class="c1"># Get mean squared residuals of the full model minus collinearity</span>
-<span class="n">n</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">nrow</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="n">p_full</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">full_model_minus_collinearity</span><span class="o">$</span><span class="n">coefficients</span><span class="p">)</span>
-<span class="n">MS_res_full</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">residuals</span><span class="p">(</span><span class="n">full_model_minus_collinearity</span><span class="p">)</span><span class="o">^</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">p_full</span><span class="p">)</span>
-
-<span class="c1"># Get SS of the reduced model</span>
-<span class="n">rss</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">sum</span><span class="p">(</span><span class="nf">residuals</span><span class="p">(</span><span class="n">reduced_model</span><span class="p">)</span><span class="o">^</span><span class="m">2</span><span class="p">)</span>
-<span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">length</span><span class="p">(</span><span class="n">reduced_model</span><span class="o">$</span><span class="n">coefficients</span><span class="p">)</span>
-<span class="n">cp</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">rss</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">MS_res_full</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="m">2</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">k</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell" id="cell-id=16bd4bad-7c52-412f-8743-ed5b3e660aaf">
-<div class="jp-Cell-inputWrapper" tabindex="0">
-<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
-</div>
-<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
-</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>From using backward selection, we reach our final reduced model which removed weight (from the already removed battery due to its high standardized GVIF). We summarize the main model statistics in the table below:</p>
-<table>
-<tr>
-<td>
-<table>
-<tr>
-<th>Metric</th>
-<th>Value</th>
-</tr>
-<tr>
-<td>$R^2$</td>
-<td>0.9144</td>
-</tr>
-<tr>
-<td>Adjusted $R^2$</td>
-<td>0.901</td>
-</tr>
-</table>
-</td>
-<td style="padding-left: 30px;">
-<table>
-<tr>
-<th>Metric</th>
-<th>Value</th>
-<th>Expected</th>
-</tr>
-<tr>
-<td>Mallow's $C_p$</td>
-<td>10.1530368897259</td>
-<td>11</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
+<p>The coefficient column is the covariate name. The estimate column gives the estimated effect that the covariate has on the price. The significance at a 5% level indicates if a covariate has has a real and significant effect on the price, and the relationship is not just random chance.</p>
 </div>
 </div>
 </div>
@@ -8147,7 +8253,7 @@ F-statistic: 68.33 on 10 and 64 DF,  p-value: &lt; 2.2e-16
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h3 id="2.5-Model-Diagnostics">2.5 Model Diagnostics<a class="anchor-link" href="#2.5-Model-Diagnostics">¶</a></h3>
+<h3 id="2.6-Model-Diagnostics">2.6 Model Diagnostics<a class="anchor-link" href="#2.6-Model-Diagnostics">¶</a></h3>
 </div>
 </div>
 </div>
@@ -8156,7 +8262,7 @@ F-statistic: 68.33 on 10 and 64 DF,  p-value: &lt; 2.2e-16
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-r"><pre><span></span><span class="nf">vif</span><span class="p">(</span><span class="n">reduced_model</span><span class="p">)</span>
@@ -8196,7 +8302,7 @@ F-statistic: 68.33 on 10 and 64 DF,  p-value: &lt; 2.2e-16
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>We do not have high standardized GVIF values, letting us disregard high multicollinearity issues.</p>
+<p>We do not have high standardized GVIF values, letting us disregard high multicollinearity issues. We now verify the linear model assumptions about homoscedasticity and normality of residuals.</p>
 </div>
 </div>
 </div>
@@ -8205,7 +8311,7 @@ F-statistic: 68.33 on 10 and 64 DF,  p-value: &lt; 2.2e-16
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-r"><pre><span></span><span class="n">residuals_df</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">data.frame</span><span class="p">(</span>
@@ -8252,7 +8358,8 @@ F-statistic: 68.33 on 10 and 64 DF,  p-value: &lt; 2.2e-16
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<p>On the left, we plotted residuals vs fitted value, and the plot shows no trends or noticeable relationship, allowing us to conclude homoscedasticity of the residuals (constant variance). By analyzing the QQ plot on the right, we see that our errors are normally distributed because they line up very well with the qqline, and do not show any obvious signs of light or heavy tailed distributions.</p>
+<p>On the left, we plotted residuals vs. fitted value, and the plot shows no trends or noticeable relationship; this random scatter of points around 0 means that the variability of the residuals is consistent across different examples and phone characteristics, allowing us to conclude homoscedasticity of the residuals (constant variance).</p>
+<p>By analyzing the QQ plot on the right, we observe that the model's errors match a normal distribution fairly well. In a QQ plot, the points represent the quantiles of our model's prediction errors, and the diagonal qqline shows the expected quantiles if the errors were normal. Since our points closely follow the line and there are no noticeable patterns, we conclude that the errors are normally distributed.</p>
 </div>
 </div>
 </div>
@@ -8263,7 +8370,7 @@ F-statistic: 68.33 on 10 and 64 DF,  p-value: &lt; 2.2e-16
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="3.-Conclusion">3. Conclusion<a class="anchor-link" href="#3.-Conclusion">¶</a></h2><h3 id="Summary">Summary<a class="anchor-link" href="#Summary">¶</a></h3><p>We first analyzed our data by pre-selecting variables and disregarding useless ones such as ID or sales number fields. Then, we did some initial data pre-processing which included dropping duplicates, transforming data to the same scale, and encoding categorical data as factors in R. We then checked for multicollinearity issues then used the AIC criterion to do model selection, resulting in a model that regresses on  <code>ppi</code>, <code>core</code>, <code>freq</code>, <code>memory</code>, and <code>thickness</code>. We then underwent model diagnostics to verify our initial assumptions about homoscedasticity of residuals and if they come from a normal distribution. A summary of the main statistics related to the final model is given below:</p>
+<h2 id="3.-Conclusion">3. Conclusion<a class="anchor-link" href="#3.-Conclusion">¶</a></h2><h3 id="Summary">Summary<a class="anchor-link" href="#Summary">¶</a></h3><p>We first analyzed our data by pre-selecting variables and disregarding irrelevant ones such as ID or sales number fields. Then, we did initial data pre-processing alongside exploraty data analysis, which included dropping duplicates, transforming data to the same scale, and encoding categorical data as factors in R. We then checked for multicollinearity issues and used the AIC criterion to do model selection, resulting in a model that regresses on <code>ppi</code>, <code>core</code>, <code>freq</code>, <code>memory</code>, and <code>thickness</code>. We then underwent model diagnostics to verify our initial assumptions about homoscedasticity of residuals and if they come from a normal distribution. A summary of the main statistics related to the final model is given below:</p>
 <table>
 <tr>
 <td>
@@ -8299,10 +8406,11 @@ F-statistic: 68.33 on 10 and 64 DF,  p-value: &lt; 2.2e-16
 </tr>
 </table>
 <p>Being able to explain 90% (adjusted $R^2$) of the variability in price after being penalized is impressive, and our $C_p$ value is nearly as expected, indicating a relatively good model fit.</p>
-<h3 id="Findings">Findings<a class="anchor-link" href="#Findings">¶</a></h3><p>From our final model, we discover that the covariates which contribute positively to the price are <code>ppi</code> (screen resolution), <code>core</code> (both 4 and 8 cores), <code>freq</code>, <code>memory</code> (all levels but 8GB). On the other hand, <code>thickness</code> and <code>memory8</code> are negatively associated with the price.</p>
-<p>In addressing our original research question, which focused on the effects of screen resolution (ppi) and the number of cores, we find that <code>ppi</code>, <code>core4</code>, and <code>core8</code> remain significant even after model selection. Their p-values are as follows: 0.00036 for <code>ppi</code>, 0.040 for <code>core4</code>, and 0.00011 for <code>core8</code>.  An interpretation of the coefficients is that each additional more pixel per inch in screen resolution is associated with a $\$1.19$ increase in the price Relative to a baseline level of two cores, 4 cores is associated with an increase in price by $\$226$ while 8 cores is associated with an increase in price by $\$506$. These findings make sense given the nature of the variables: more cores enhance the phone’s performance and require more advanced hardware, while a higher screen resolution results in a sharper display capable of handling high-quality images.</p>
-<h3 id="Limitations">Limitations<a class="anchor-link" href="#Limitations">¶</a></h3><p>As the data was collected from an observational study, there is a risk of confounding variables not included in our analysis, such as brand (Apple vs Android), age of the phone (newer phones are more expensive than older phones in general). Since we used an additive regression model, we also overlooked potential interaction effects between variables, which could affect the model’s explanatory power. It's worth noting that as technology evolves over time, where a 128GB RAM phone might seem crazy now, but might be normal in the future, prices of phones based on such characteristics could evolve and change, and this it not accounted for by our model.</p>
-<h3 id="Future-Research-Questions">Future Research Questions<a class="anchor-link" href="#Future-Research-Questions">¶</a></h3><p>Future research could explore confounding variables such as including brand or camera quality, and could also explore interaction effects to reveal relationships between covariates. As prices related to certain technological specs could change as technology evolves over time, a study could also consider temporal effects and time series data to predict prices of phones in the future.</p>
+<h3 id="Findings">Findings<a class="anchor-link" href="#Findings">¶</a></h3><p>From our final model, we discover that the covariates which contribute positively to the price are <code>ppi</code> (screen resolution), <code>core</code> (both 4 and 8 cores), <code>freq</code>, <code>memory</code> (all levels but 8GB). On the other hand, <code>thickness</code> and <code>memory8</code> are negatively associated with the price. It is worth noting that <code>freq</code>, <code>memory8</code>, and <code>memory16</code> are all statistically insignificant at the 5% level. This means that despite their positive or negative contribution to the price predictions of a cell phone, we could also choose to ignore their effects.</p>
+<p>In addressing our original research question, which focused on the effects of screen resolution (ppi) and the number of cores, we find that <code>ppi</code>, <code>core4</code>, and <code>core8</code> remain significant even after model selection. Their p-values are as follows: 0.00036 for <code>ppi</code>, 0.040 for <code>core4</code>, and 0.00011 for <code>core8</code>.  An interpretation of the coefficients is that each additional more pixel per inch in screen resolution is associated with a $\$1.19$ increase in the price. Relative to a baseline level of two cores, 4 cores is associated with an increase in price by $\$226$ while 8 cores is associated with an increase in price by $\$506$. These findings make sense given the nature of the variables: more cores enhance the phone’s performance and require more advanced hardware, while a higher screen resolution results in a sharper display capable of handling high-quality images.</p>
+<h3 id="Business-Implications">Business Implications<a class="anchor-link" href="#Business-Implications">¶</a></h3><p>From the customer’s perspective, our model helps customers understand how different features influence a phone’s price. Knowing this, buyers can evaluate whether a phone is priced unusually high or low without the strong features to support it. From the company’s perspective, manufacturers can use these insights to fine-tune their pricing and product design strategies. Features like higher screen resolution and CPU cores have a strong positive association with price, which supports using them as key differentiators in premium models in segmenting product lines.</p>
+<h3 id="Limitations">Limitations<a class="anchor-link" href="#Limitations">¶</a></h3><p>As the data was collected from an observational study, there is a risk of confounding variables not included in our analysis, such as brand (Apple vs Android), age of the phone (newer phones are more expensive than older phones in general). Since we used an additive regression model, we overlooked potential interaction effects between variables, which could affect the model’s explanatory power. Also, as technology evolves over time, prices of phones based on current tech can change. In fact, phone specifications may evolve such that the different levels of <code>core</code> and <code>memory</code> in our model may become outdated in the future.</p>
+<h3 id="Future-Research-Questions">Future Research Questions<a class="anchor-link" href="#Future-Research-Questions">¶</a></h3><p>Future research could explore confounding variables such as including brand or camera quality, and could also explore interaction effects to reveal relationships between covariates. As prices related to certain technological specs could evolve over time, a study could also consider temporal effects and time series data to predict prices of phones in the future.</p>
 </div>
 </div>
 </div>
@@ -8319,7 +8427,7 @@ F-statistic: 68.33 on 10 and 64 DF,  p-value: &lt; 2.2e-16
 </div>
 </div>
 </div>
-</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=6492ca05-7ee6-4cff-a9c5-398d37cde9a4">
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs" id="cell-id=3dc14484-75ad-4129-ac63-c73ffc2039e2">
 <div class="jp-Cell-inputWrapper" tabindex="0">
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
